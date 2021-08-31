@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" style="--theme-color: #262626; --link-color: #262626;">
+<head>
+  <meta charset="UTF-8">
+  <title>假墙（伪墙）认识以及攻击解决方法 - Daimon&#39;s blog</title>
+
+  <link rel="icon" href="https://i.loli.net/2021/08/19/WxJseRjKvTD6aZm.gif">
+<!-- <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet"> -->
+<link rel="alternate" type="application/atom+xml" title="Daimon&#39;s blog - Atom Feed" href="https://fsacg.cn/atom.xml">
+
+  <script src="https://cdn.jsdelivr.net/gh/Fog-Forest/live2d@1.0.2/live2d_load/autoload.js"></script>
+
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-NFCRR8Q57W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  </script> -->
+  <script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-182385326-1');
+    ga('set', 'dimension1', 'site/DW70PnRjC');
+    ga('set', 'dimension2', 'post/XXeeoi9wb');
+    ga('send', 'pageview');
+    // gtag('set', {
+    //   'custom_map': {
+    //     'dimension1': 'siteId',
+    //     'dimension2': 'postId',
+    //   }
+    // })
+
+    // gtag('config', 'G-NFCRR8Q57W', {
+    //   'siteId': 'site/DW70PnRjC',
+    //   'postId': 'post/XXeeoi9wb',
+    // });
+  </script>
+
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="
+一、什么是假墙攻击及危害
+假墙攻击是指利用 GWF 的功能对网站发动攻击的一种方式。
+黑客们在国内架设一台服务器 A，在国外架设一台服务器 B。然后通过修改服务器 A 的 hosts 文件将要攻击的网站如 www.xxxxx.com 指向...">
+
+  <meta property="og:title" content="假墙（伪墙）认识以及攻击解决方法 - Daimon&#39;s blog">
+  <meta property="og:description" content="
+一、什么是假墙攻击及危害
+假墙攻击是指利用 GWF 的功能对网站发动攻击的一种方式。
+黑客们在国内架设一台服务器 A，在国外架设一台服务器 B。然后通过修改服务器 A 的 hosts 文件将要攻击的网站如 www.xxxxx.com 指向...">
+  
+    <meta property="og:image" content="https://static.gridea.dev/307271859892650562/GVG-QsJSU.webp">
+  
+  <meta property="og:url" content="https://fsacg.cn/jia-qiang-wei-qiang-gong-ji-jie-jue-fang-fa-da-quan/">
+  <meta property="og:site_name" content="Daimon&#39;s blog">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image:alt" content="假墙（伪墙）认识以及攻击解决方法">
+
+  <meta name="gridea:post_id" content="XXeeoi9wb">
+
+  <link rel="canonical" href="https://fsacg.cn/jia-qiang-wei-qiang-gong-ji-jie-jue-fang-fa-da-quan">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.0.3/styles/a11y-light.css">
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@gridea/theme@1.0.8/css/main.css">
+
+</head>
+<body>
+  
+    
+  
+  <div id="page">
+    <div class="mb-16 sticky top-0 z-20 bg-white">
+  <header class="py-4 flex items-baseline justify-between max-w-2xl mx-auto px-2">
+    <h1 class="text-lg text-center font-medium px-4 md:px-0 flex items-center">
+      <div class="site-logo-text font-normal">D</div>
+      <a href="/">Daimon&#39;s blog</a>
+    </h1>
+    <div class="hidden sm:flex justify-center">
+      
+        
+        <a
+          href="http://blog.agluntan.cn"
+          class="mx-2 text-base border-b border-transparent"
+          target="_blank"
+        >首页</a>
+        
+          <span class="text-gray-200">/</span>
+        
+      
+        
+        <a
+          href="https://2247481637.github.io/you-lian"
+          class="mx-2 text-base border-b border-transparent"
+          target="_blank"
+        >友链</a>
+        
+      
+    </div>
+    <div class="flex sm:hidden py-2 px-4 text-center cursor-pointer" @click="openMenu = true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/></svg>
+    </div>
+  </header>
+
+  <div class="fixed top-0 right-0 bottom-0 left-0 bg-white hidden" :style="{
+    display: openMenu ? 'block !important' : 'none',
+  }" v-if="openMenu">
+    <div class="py-4 px-2 flex justify-end" @click="openMenu = false">
+      <div class="flex py-2 px-4 text-center cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
+      </div>
+    </div>
+    <div class="flex flex-col p-4">
+      
+        
+        <a
+          href="http://blog.agluntan.cn"
+          class="mx-2 my-4 text-base border-b border-transparent"
+          target="_blank"
+        >首页</a>
+      
+        
+        <a
+          href="https://2247481637.github.io/you-lian"
+          class="mx-2 my-4 text-base border-b border-transparent"
+          target="_blank"
+        >友链</a>
+      
+    </div>
+  </div>
+</div>
+    <div class="border-b border-gray-200">
+      <div class="max-w-2xl mx-auto px-6 md:px-2">
+        <div class="my-24 text-center">
+          <h1 class="text-2xl font-bold">假墙（伪墙）认识以及攻击解决方法</h1>
+          <div class="post-title-bar mx-auto rounded mt-4"></div>
+          <div class="text-gray-400 mt-4">2021.08.19</div>
+          <div class="flex justify-center mt-4">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="sticky-bar" class="w-full sticky top-0 z-10 bg-white" style="height: 64px;"></div>
+    <div class="p-4 md:p-16 bg-white">
+      <div class="max-w-2xl mx-auto px-4 flex relative">
+        <section class="post-content flex-1 default-post-content max-w-2xl">
+          <div v-pre>
+            <p><img src="https://static.gridea.dev/307271859892650562/TAnxmk1-i.jpg" alt="" loading="lazy"><br>
+一、什么是假墙攻击及危害</p>
+<p>假墙攻击是指利用 GWF 的功能对网站发动攻击的一种方式。</p>
+<p>黑客们在国内架设一台服务器 A，在国外架设一台服务器 B。然后通过修改服务器 A 的 hosts 文件将要攻击的网站如 www.xxxxx.com 指向服务器 B 上，然后在服务器 B 上创建非法内容的网站，并且绑定域名 www.xxxxx.com 。</p>
+<p>这样只要通过服务器 A 访问 www.xxxxxx.com 就会“错误”的转向黑客架设好的违法网站上，而不是 www.xxxxx.com 设置的正确服务器。</p>
+<p>然后黑客在服务器 A 上通过发包软件，大量发送携带违法关键词的请求到 www.xxxxx.com 网站上，这样即有非法的请求，又确实能访问到非法的结果，GWF就会通过 tcp 阻断的方式将 www.xxxxx.com 网站临时屏蔽，如果黑客持续进行这种发包攻击，那么网站就会反复的被临时封禁，也就导致了长时的无法访问。</p>
+<p>案例：如烈马团队利用假墙攻击各大站长论坛，从而进行勒索敲诈。</p>
+<p>二、如何检测是否遭到假墙攻击<br>
+如果你的网站频繁甚至长时间无法访问，检查发现域名解析正常、WEB服务正常、国外访问正常、域名没有被墙也没有被污染、服务器的 80 和 443 端口无法访问，那么基本上是受到了假墙攻击。<br>
+检测网址：https://www.boce.com 及 https://support.dnspod.cn。通过前者检查国内访问情况以及域名是否被墙、被劫持，DNS是否被污染。通过后者检查 80 和 443 端口服务是否正常。</p>
+<p>三、如何防御和解决假墙攻击</p>
+<p>1.域名备案并使用国内服务器。</p>
+<p>因为假墙攻击是利用了 GWF 的功能，因此最有效的方法就是将受到攻击的域名备案然后使用国内服务器，因为 GWF 是设计用来针对服务器在境外的网站的。</p>
+<p>优点：一劳永逸，绝对有效。</p>
+<p>缺点：备案时间较长，尤其假墙攻击一般面向的网站都或多或少有一些违规内容可能无法进行备案。</p>
+<p>2.DNS智能解析+多IP服务器。</p>
+<p>这个方案需要用到大量的IP，至少100以上，以及一款支持 API 的 DNS，这里以阿里云企业 DNS 为例，解决方式还可以细分为两种：</p>
+<p>一是通过 API 循环解析，设置每分钟切换一个解析 IP。</p>
+<p>二是通过阿里云的全局流量管理功能，设置多个解析 IP 池，并对每个解析 IP 每分钟检查一次，如果这个 IP 无法访问，那么智能切换成其他正常的 IP 进行解析。</p>
+<p>这样就可以有效的解决假墙的问题，因为 IP 比较多，是要超过墙的速度的。</p>
+<p>优点：全程可控，命运掌握在自己手里，适合爱折腾的站长。</p>
+<p>缺点：成本较高，DNS 及 大量的 IP 都要花钱，另外也比较考验技术，因为要自己开发代码调用 API 或者设置全局流量管理及智能解析等功能，同时受各地 DNS 服务器缓存时间的影响，必然有一部分用户还是会受到影响。</p>
+<p>3.使用抗假墙的 CDN 。</p>
+<p>哪里有需求，哪里就有市场，目前市面上已经有一些提供抗假墙功能的 CDN 服务商了。可自行百度查找，注意选择大厂！避免跑路和低质量！</p>
+
+          </div>
+          <div class="py-4 text-gray-600 flex items-center justify-between">
+            <div class="">
+              <div class="text-sm text-gray-300">最后更新于: </div>
+              <div class="text-base font-medium">2021.08.19</div>
+            </div>
+            <!-- <div class="flex items-center text-sm text-gray-600">
+              <i class="ri-eye-line"></i> <span class="ml-2">{{ views }}</span>
+            </div> -->
+          </div>
+          <div>
+            <div id="disqus_thread"></div>
+          </div>
+        </section>
+        
+      </div>
+    </div>
+    <div class="py-8 text-gray-300 text-center border-t border-gray-200">
+  Powered by Gridea
+</div>
+  </div>
+
+  <script src="//cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+  
+  <script src="//cdn.jsdelivr.net/npm/@gridea/theme@1.0.8/js/main.js"></script>
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.0.0/build/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+  
+    <script src="https://cdn.jsdelivr.net/gh/Fog-Forest/live2d@1.0.2/live2d_load/autoload.js"></script>
+  
+</body>
+</html>

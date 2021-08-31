@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" style="--theme-color: #262626; --link-color: #262626;">
+<head>
+  <meta charset="UTF-8">
+  <title>域名劫持认识与预防 - Daimon&#39;s blog</title>
+
+  <link rel="icon" href="https://i.loli.net/2021/08/19/WxJseRjKvTD6aZm.gif">
+<!-- <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet"> -->
+<link rel="alternate" type="application/atom+xml" title="Daimon&#39;s blog - Atom Feed" href="https://fsacg.cn/atom.xml">
+
+  <script src="https://cdn.jsdelivr.net/gh/Fog-Forest/live2d@1.0.2/live2d_load/autoload.js"></script>
+
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-NFCRR8Q57W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  </script> -->
+  <script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-182385326-1');
+    ga('set', 'dimension1', 'site/DW70PnRjC');
+    ga('set', 'dimension2', 'post/WJAOcclGd');
+    ga('send', 'pageview');
+    // gtag('set', {
+    //   'custom_map': {
+    //     'dimension1': 'siteId',
+    //     'dimension2': 'postId',
+    //   }
+    // })
+
+    // gtag('config', 'G-NFCRR8Q57W', {
+    //   'siteId': 'site/DW70PnRjC',
+    //   'postId': 'post/WJAOcclGd',
+    // });
+  </script>
+
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="一、域名劫持认识
+百度百科词条：域名劫持是互联网攻击的一种方式，通过攻击域名解析服务器（DNS），或伪造域名解析服务器（DNS）的方法，把目标网站域名解析到错误的IP地址从而实现用户无法访问目标网站的目的或者蓄意或恶意要求用户访问指定IP地...">
+
+  <meta property="og:title" content="域名劫持认识与预防 - Daimon&#39;s blog">
+  <meta property="og:description" content="一、域名劫持认识
+百度百科词条：域名劫持是互联网攻击的一种方式，通过攻击域名解析服务器（DNS），或伪造域名解析服务器（DNS）的方法，把目标网站域名解析到错误的IP地址从而实现用户无法访问目标网站的目的或者蓄意或恶意要求用户访问指定IP地...">
+  
+    <meta property="og:image" content="https://static.gridea.dev/307271859892650562/TAnxmk1-i.jpg">
+  
+  <meta property="og:url" content="https://fsacg.cn/yu-ming-jie-chi-ren-shi-yu-yu-fang/">
+  <meta property="og:site_name" content="Daimon&#39;s blog">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image:alt" content="域名劫持认识与预防">
+
+  <meta name="gridea:post_id" content="WJAOcclGd">
+
+  <link rel="canonical" href="https://fsacg.cn/yu-ming-jie-chi-ren-shi-yu-yu-fang">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.0.3/styles/a11y-light.css">
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@gridea/theme@1.0.8/css/main.css">
+
+</head>
+<body>
+  
+    
+  
+  <div id="page">
+    <div class="mb-16 sticky top-0 z-20 bg-white">
+  <header class="py-4 flex items-baseline justify-between max-w-2xl mx-auto px-2">
+    <h1 class="text-lg text-center font-medium px-4 md:px-0 flex items-center">
+      <div class="site-logo-text font-normal">D</div>
+      <a href="/">Daimon&#39;s blog</a>
+    </h1>
+    <div class="hidden sm:flex justify-center">
+      
+        
+        <a
+          href="http://blog.agluntan.cn"
+          class="mx-2 text-base border-b border-transparent"
+          target="_blank"
+        >首页</a>
+        
+          <span class="text-gray-200">/</span>
+        
+      
+        
+        <a
+          href="https://2247481637.github.io/you-lian"
+          class="mx-2 text-base border-b border-transparent"
+          target="_blank"
+        >友链</a>
+        
+      
+    </div>
+    <div class="flex sm:hidden py-2 px-4 text-center cursor-pointer" @click="openMenu = true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/></svg>
+    </div>
+  </header>
+
+  <div class="fixed top-0 right-0 bottom-0 left-0 bg-white hidden" :style="{
+    display: openMenu ? 'block !important' : 'none',
+  }" v-if="openMenu">
+    <div class="py-4 px-2 flex justify-end" @click="openMenu = false">
+      <div class="flex py-2 px-4 text-center cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
+      </div>
+    </div>
+    <div class="flex flex-col p-4">
+      
+        
+        <a
+          href="http://blog.agluntan.cn"
+          class="mx-2 my-4 text-base border-b border-transparent"
+          target="_blank"
+        >首页</a>
+      
+        
+        <a
+          href="https://2247481637.github.io/you-lian"
+          class="mx-2 my-4 text-base border-b border-transparent"
+          target="_blank"
+        >友链</a>
+      
+    </div>
+  </div>
+</div>
+    <div class="border-b border-gray-200">
+      <div class="max-w-2xl mx-auto px-6 md:px-2">
+        <div class="my-24 text-center">
+          <h1 class="text-2xl font-bold">域名劫持认识与预防</h1>
+          <div class="post-title-bar mx-auto rounded mt-4"></div>
+          <div class="text-gray-400 mt-4">2021.08.20</div>
+          <div class="flex justify-center mt-4">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="sticky-bar" class="w-full sticky top-0 z-10 bg-white" style="height: 64px;"></div>
+    <div class="p-4 md:p-16 bg-white">
+      <div class="max-w-2xl mx-auto px-4 flex relative">
+        <section class="post-content flex-1 default-post-content max-w-2xl">
+          <div v-pre>
+            <p>一、域名劫持认识<br>
+百度百科词条：域名劫持是互联网攻击的一种方式，通过攻击域名解析服务器（DNS），或伪造域名解析服务器（DNS）的方法，把目标网站域名解析到错误的IP地址从而实现用户无法访问目标网站的目的或者蓄意或恶意要求用户访问指定IP地址（网站）的目的。</p>
+<p>我想除了需要了解原理的朋友，一般的也懒得看吧(◔◡◔)<br>
+简单易懂的回答：打开你的网站跳转到其他网址◝₍ᴑ̑ДO͝₎◞</p>
+<p>二、域名劫持带来的更多危害<br>
+1，域名被解析到其它地址，用户无法正常访问，网站流量受损<br>
+2，通过泛解析生成大量子域名，共同指向其它地址（往往是恶意垃圾网站）<br>
+3，域名被解析到恶意钓鱼网站，导致用户财产损失<br>
+4，当域名被劫持后的内容干扰搜索结果时，为保障用户的使用体验和安全，百度搜索引擎会暂时关闭对域名的收录和展示，待严格审核确认后才会再度放开</p>
+<p>三、如何详细检测域名是否被劫持<br>
+检测工具1：http://wzjk.iis7.net/?zmyd<br>
+检测工具2：https://www.boce.com</p>
+<p>四、如何预防域名劫持<br>
+1、为域名注册商和注册用邮箱设置复杂密码且经常更换。使用单独的DNS服务，也需要对密码进行上述设置。同时注意不要在多个重要注册地使用相同的用户名和密码；<br>
+　　2、将域名更新设置为锁定状态，不允许通过DNS服务商网站修改记录，使用此方法后，需要做域名解析都要通过服务商来完成，时效性较差；<br>
+　　3、定期检查域名帐户信息、域名whois信息，査看事件管理器，清理Web网点中存在的可疑文件。每天site网站检查是否有预期外网页。详细检查网站索引和外链信息，有异常一定要检查清楚；<br>
+　　4、加强网站的防SQL注入功能，SQL注入是利用SQL语句的特点向数据库写内容，从而获取到权限的方法；<br>
+　　5、配置Web站点文件夹及文件操作权限。Windows网络操作系统中，使用超级管理员权限， 对Web站点文件及文件夹配置权限，多数设置为读权限，谨慎使用写权限，如果无法获取超级管理员权限，这样木马程序便无法生根，网站域名被劫持的可能便可以降低很多；<br>
+　　6、利用事务签名对区域传送和区域更新进行数字签名；<br>
+　　7、删除运行在DNS服务器上的不必要服务，如FTP；<br>
+　　8、在网络外围和DNS服务器上使用防火墙服务。将访问限制在那些DNS功能需要的端口/服务上。</p>
+<p>五、域名被劫持后解决方法<br>
+注意：域名一旦被劫持将很难完全解决问题！<br>
+1、立即修改域名服务商和邮箱密码，使用复杂度高的密码且经常更换；<br>
+2、删除不属于你的DNS解析，恢复DNS设置；<br>
+3、关闭域名的泛解析，进入域名管理后台就可以点击我们的域名找到带*号的域名解析，删除掉就可以了；<br>
+　　4、如果使用的是第三方DNS服务，应立即修改第三方DNS服务端帐户密码，锁定帐户信息，开启帐户短信邮箱类提醒；<br>
+　　5、看网站整体代码是否被篡改。这是解决域名劫持问题之后对自己的网站进行全面排查，从而做到完美的清除垃圾页面，保证网站的安全性；<br>
+　　6、收集全部被非法添加的页面并设置404，使用百度站长平台工具提交死链。因为那些网站的死链就是我们的垃圾页面，所以我们要把这些死链都解决。我们在页面举报内容处写上网站被恶意攻击就可以了；<br>
+　　7、如果该服务商下域名经常出现被劫持事件，可考虑更换更安全稳定的服务商。有能力的网站可自建DNS服务自主运营。</p>
+
+          </div>
+          <div class="py-4 text-gray-600 flex items-center justify-between">
+            <div class="">
+              <div class="text-sm text-gray-300">最后更新于: </div>
+              <div class="text-base font-medium">2021.08.20</div>
+            </div>
+            <!-- <div class="flex items-center text-sm text-gray-600">
+              <i class="ri-eye-line"></i> <span class="ml-2">{{ views }}</span>
+            </div> -->
+          </div>
+          <div>
+            <div id="disqus_thread"></div>
+          </div>
+        </section>
+        
+      </div>
+    </div>
+    <div class="py-8 text-gray-300 text-center border-t border-gray-200">
+  Powered by Gridea
+</div>
+  </div>
+
+  <script src="//cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+  
+  <script src="//cdn.jsdelivr.net/npm/@gridea/theme@1.0.8/js/main.js"></script>
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.0.0/build/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+  
+    <script src="https://cdn.jsdelivr.net/gh/Fog-Forest/live2d@1.0.2/live2d_load/autoload.js"></script>
+  
+</body>
+</html>
